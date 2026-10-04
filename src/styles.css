@@ -1,0 +1,91 @@
+/* ============================================================
+   MINH TÂN OFFICIAL — GLOBAL STYLES
+   Chỉ chứa: reset, nền trang, cơ chế scroll-snap, tiện ích reveal & lazy.
+   (Style của từng thành phần nằm cạnh component của nó trong src/app/mt-scroll)
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  background: #07070a;
+  color: #fff;
+  color-scheme: dark;
+  overflow-x: hidden; /* không bao giờ có thanh cuộn ngang */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------
+   FULLSCREEN SCROLL (class do ScrollEngine gắn vào <html>)
+   - Vuốt cảm ứng / kéo: native scroll-snap (mượt, không khoá).
+   - scroll-snap-stop: always (ở mt-section) → không bỏ qua section.
+   - Khi đang chuyển cảnh bằng JS (wheel / phím / icon / chấm) tạm tắt snap
+     để animation không bị trình duyệt kéo giật; xong thì bật lại.
+   ------------------------------------------------------------ */
+html.mt-fullscreen {
+  scroll-snap-type: y mandatory;
+  overscroll-behavior: none; /* chặn kéo-giãn / pull-to-refresh gây lệch section */
+  scroll-behavior: auto; /* tuyệt đối không dùng smooth native: ScrollAnimator tự xử lý */
+  scrollbar-width: none;
+}
+html.mt-fullscreen::-webkit-scrollbar {
+  display: none;
+}
+html.mt-fullscreen.mt-is-animating {
+  scroll-snap-type: none;
+}
+
+/* ------------------------------------------------------------
+   TIỆN ÍCH TUỲ CHỌN cho nội dung bạn thêm sau này
+   ------------------------------------------------------------ */
+
+/* Phần tử con xuất hiện lần lượt khi section active.
+   <h1 class="mt-reveal" style="--mt-stagger: 0">  <p class="mt-reveal" style="--mt-stagger: 1"> */
+.mt-reveal {
+  opacity: 0;
+  transform: translateY(var(--mt-reveal-distance, 2rem));
+  transition:
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--mt-stagger, 0) * 90ms);
+}
+mt-section[data-state='active'] .mt-reveal {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--mt-stagger, 0) * 90ms + 200ms); /* chờ section vào cảnh */
+}
+mt-section[data-reduced='true'] .mt-reveal {
+  transform: none;
+  transition-duration: 200ms;
+  transition-delay: 0s;
+}
+
+/* Ảnh lazy (directive mtLazy) fade-in khi tải xong. */
+.mt-lazy {
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.mt-lazy.is-loaded {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-lazy {
+    transition-duration: 0.01ms;
+  }
+}

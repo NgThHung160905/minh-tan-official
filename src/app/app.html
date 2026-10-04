@@ -1,0 +1,63 @@
+<!--
+  ============================================================
+  MINH TÂN OFFICIAL — mỗi ảnh trong F:\Minh Tân = một fullscreen section
+  Thứ tự lấy từ số trong tên file (xem danh sách PHOTOS trong app.ts).
+  • Ảnh số 1 : tải ưu tiên (eager + fetchpriority=high, có <link rel=preload> trong index.html)
+  • Ảnh còn lại : lazy-load + fade-in khi tải xong
+  • Hiển thị: cover khi tỉ lệ gần màn hình, ngược lại contain + nền mờ (không mất nội dung)
+  ============================================================
+-->
+<img class="brand-logo" src="images/DJI.png" alt="DJI Logo">
+
+<div class="social-links">
+  <a href="https://www.facebook.com/0nly.tannn" class="social-fb" target="_blank" rel="noopener noreferrer"
+    aria-label="Facebook">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path
+        d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-1.1 0-2 .9-2 2v1h3l-1 3h-2v6.8C18.56 20.87 22 16.84 22 12z" />
+    </svg>
+  </a>
+  <a href="https://www.instagram.com/_onlytan.png?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw=="
+    class="social-ig" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path
+        d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.25a1.25 1.25 0 0 0-2.5 0 1.25 1.25 0 0 0 2.5 0zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+    </svg>
+  </a>
+  <a href="https://www.tiktok.com/@onlytan.tanonly" class="social-tt" target="_blank" rel="noopener noreferrer"
+    aria-label="TikTok">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path
+        d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.15 4.39-2.92 5.74-1.7 1.28-3.9 1.7-5.94 1.18-2.03-.51-3.75-1.92-4.57-3.83-.81-1.89-.72-4.14.28-5.95 1.02-1.86 2.87-3.14 4.93-3.41 1-.13 2.02-.1 3.03-.02v4.06c-1.39-.12-2.84.14-3.96 1-.95.73-1.46 1.94-1.28 3.12.19 1.18 1.05 2.19 2.17 2.57 1.13.38 2.45.16 3.38-.59 1-.8 1.48-2.09 1.46-3.38.02-5.74.01-11.49.02-17.23h-.01z" />
+    </svg>
+  </a>
+</div>
+
+<div class="motto-text">
+  Imma just "hehe" my thru life 🤸🏻
+</div>
+
+<audio #bgAudio autoplay loop src="audio.mp3"></audio>
+
+<mt-fullscreen [options]="options">
+  @for (photo of photos; track photo.order; let first = $first) {
+  <mt-section background="#07070a">
+    <mt-photo [class.hero-image]="photo.order === 0" [src]="photo.src" [alt]="photo.alt" [width]="photo.width"
+      [height]="photo.height" [focus]="photo.focus ?? '50% 50%'" [priority]="first" />
+    @if (photo.order === 0) {
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1 class="hero-title">Minh Tân</h1>
+        <div class="subtitle-group">
+          <div class="hero-frame">
+            <p class="hero-subtitle">Onlytan.png</p>
+          </div>
+          <img class="yamaha-logo" src="images/Yamaha.png" alt="Yamaha Logo">
+        </div>
+      </div>
+      <img class="hero-side-image" src="images/WR155R.png" alt="WR155R">
+    </div>
+    }
+  </mt-section>
+  }
+</mt-fullscreen>

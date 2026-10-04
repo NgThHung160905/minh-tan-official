@@ -1,0 +1,124 @@
+:host {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* chỉ nút nhận chạm → không cản thao tác cảm ứng bên dưới */
+}
+
+.indicator {
+  --size: clamp(2.75rem, 2.1rem + 1.4vw, 3.5rem); /* ≥ 44px: đủ vùng chạm trên mobile */
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  background: none;
+  color: var(--mt-ui-color, #fff);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: indicator-in 900ms 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.indicator__label {
+  font-size: clamp(0.62rem, 0.56rem + 0.18vw, 0.78rem);
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em; /* bù khoảng cách chữ cuối để canh giữa chuẩn */
+  text-transform: uppercase;
+  opacity: 0.75;
+  transition: opacity 300ms ease;
+}
+
+.indicator__icon {
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border: 1px solid color-mix(in srgb, currentColor 38%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  transition:
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 300ms ease,
+    background-color 300ms ease;
+}
+
+.indicator__arrow {
+  width: 46%;
+  height: 46%;
+  animation: indicator-bounce 1.8s ease-in-out infinite;
+}
+
+/* Section cuối: mũi tên quay lên (nhịp nảy tự đảo chiều theo hệ toạ độ đã xoay). */
+.indicator.is-up .indicator__icon {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+  .indicator:hover .indicator__label {
+    opacity: 1;
+  }
+  .indicator:hover .indicator__icon {
+    border-color: currentColor;
+    background: color-mix(in srgb, currentColor 14%, transparent);
+  }
+}
+
+.indicator:active .indicator__icon {
+  background: color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.indicator:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 1rem;
+}
+
+/* Màn hình ngang thấp (điện thoại xoay ngang): gọn lại, bỏ chữ. */
+@media (max-height: 440px) {
+  .indicator__label {
+    display: none;
+  }
+  .indicator {
+    --size: 2.75rem;
+  }
+}
+
+@keyframes indicator-bounce {
+  0%,
+  100% {
+    transform: translateY(-12%);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(14%);
+    opacity: 1;
+  }
+}
+
+@keyframes indicator-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Giảm chuyển động */
+.indicator.is-reduced,
+.indicator.is-reduced .indicator__arrow {
+  animation: none;
+}
+.indicator.is-reduced .indicator__icon {
+  transition-duration: 0.01ms;
+}

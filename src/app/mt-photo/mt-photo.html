@@ -1,0 +1,27 @@
+@if (fit() === 'contain') {
+  <!-- Nền lấp khoảng thừa: chính ảnh này, phóng to + làm mờ (chỉ trang trí). -->
+  <img
+    class="mt-photo__backdrop"
+    [src]="src()"
+    alt=""
+    aria-hidden="true"
+    [attr.loading]="priority() ? 'eager' : 'lazy'"
+    decoding="async"
+    draggable="false"
+  />
+}
+<img
+  #main
+  class="mt-photo__img"
+  [src]="src()"
+  [alt]="alt()"
+  [attr.width]="width()"
+  [attr.height]="height()"
+  [attr.loading]="priority() ? 'eager' : 'lazy'"
+  [attr.fetchpriority]="priority() ? 'high' : 'auto'"
+  [style.object-position]="fit() === 'cover' ? focus() : '50% 50%'"
+  decoding="async"
+  draggable="false"
+  (load)="onLoad(main)"
+  (error)="loaded.set(true)"
+/>

@@ -1,0 +1,78 @@
+:host {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #07070a;
+  user-select: none;
+  -webkit-user-select: none;
+  container-type: size; /* để tính đúng kích thước ảnh bằng cqw / cqh */
+  --ar: 1;
+  --fx: 0%;
+  --fy: 0%;
+}
+
+img {
+  position: absolute;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* ───── Chế độ cover: phủ kín ───── */
+.mt-photo__img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+:host(.is-loaded) .mt-photo__img {
+  opacity: 1;
+}
+
+/* ───── Chế độ contain: ảnh giữ NGUYÊN tỉ lệ & kích thước, nằm giữa màn hình ───── */
+:host([data-fit='contain']) .mt-photo__img {
+  inset: 0;
+  margin: auto;
+  width: min(100cqw, 100cqh * var(--ar));
+  height: auto;
+  aspect-ratio: var(--ar);
+  object-fit: fill; /* khung đã đúng tỉ lệ ảnh → không méo */
+
+  /* Chỉ làm mềm viền ở phía có khoảng thừa → hoà vào nền, không có đường cắt cứng. */
+  --_mx: linear-gradient(to right, transparent 0, #000 var(--fx), #000 calc(100% - var(--fx)), transparent 100%);
+  --_my: linear-gradient(to bottom, transparent 0, #000 var(--fy), #000 calc(100% - var(--fy)), transparent 100%);
+  -webkit-mask-image: var(--_mx), var(--_my);
+  mask-image: var(--_mx), var(--_my);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* ───── Nền lấp khoảng thừa: chính ảnh này, mờ sâu + tối nhẹ ───── */
+.mt-photo__backdrop {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(60px) brightness(0.55) saturate(1.25);
+  transform: scale(1.25); /* che viền mờ của blur */
+}
+
+/* Vignette: tối dần ra mép, làm 2 bên sâu và sạch hơn. */
+:host([data-fit='contain'])::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.55) 100%),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.25), transparent 20%, transparent 80%, rgb(0 0 0 / 0.25));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-photo__img {
+    transition-duration: 0.01ms;
+  }
+}

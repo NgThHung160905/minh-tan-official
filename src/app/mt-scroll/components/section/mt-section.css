@@ -1,0 +1,74 @@
+/*
+ * SECTION — kích thước & hiệu ứng chuyển cảnh.
+ * Chỉ animate opacity / transform (+ filter cho blur) để chạy trên GPU compositor.
+ * Hiệu ứng chạy MỘT LẦN khi section vào / rời viewport (đổi data-state), không lặp khi đứng yên.
+ */
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  /* 100svh thích ứng thanh địa chỉ mobile; 100vh là phương án dự phòng cho trình duyệt cũ. */
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+
+  /* Căn khít & không bao giờ bỏ qua section khi vuốt / kéo. */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  /* Biến nội bộ cho từng trạng thái. */
+  --_o: 1;
+  --_ty: 0px;
+  --_s: 1;
+  --_b: 0px;
+}
+
+.mt-section__stage {
+  width: 100%;
+  height: 100%;
+  opacity: var(--_o);
+  transition-property: opacity, transform, filter, visibility;
+  transition-duration: var(--mt-duration, 900ms);
+  transition-timing-function: var(--mt-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* ───────── Trạng thái ẩn (before / after) theo từng kiểu animation ───────── */
+
+:host([data-anim~='fade']:not([data-state='active'])) {
+  --_o: 0;
+}
+:host([data-anim~='fade']:not([data-state='active'])) .mt-section__stage {
+  visibility: hidden; /* ẩn khỏi tab / trình đọc màn hình sau khi mờ hẳn */
+}
+
+:host([data-anim~='slide'][data-state='before']) {
+  --_ty: calc(var(--mt-slide-distance, 12vh) * -1);
+}
+:host([data-anim~='slide'][data-state='after']) {
+  --_ty: var(--mt-slide-distance, 12vh);
+}
+:host([data-anim~='scale']:not([data-state='active'])) {
+  --_s: var(--mt-scale-from, 0.92);
+}
+:host([data-anim~='blur']:not([data-state='active'])) {
+  --_b: var(--mt-blur-from, 16px);
+}
+
+/* Chỉ áp transform / filter khi thật sự cần (trạng thái active = none → không tạo layer thừa). */
+:host([data-anim~='slide']:not([data-state='active'])) .mt-section__stage,
+:host([data-anim~='scale']:not([data-state='active'])) .mt-section__stage {
+  transform: translateY(var(--_ty)) scale(var(--_s));
+}
+:host([data-anim~='blur']:not([data-state='active'])) .mt-section__stage {
+  filter: blur(var(--_b));
+}
+
+/* ───────── Giảm chuyển động (prefers-reduced-motion) ───────── */
+:host([data-reduced='true']) .mt-section__stage {
+  transform: none !important;
+  filter: none !important;
+  transition-property: opacity, visibility;
+  transition-duration: 200ms;
+  transition-timing-function: linear;
+}
