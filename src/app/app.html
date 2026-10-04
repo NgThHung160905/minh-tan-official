@@ -39,24 +39,25 @@
 
 <audio #bgAudio autoplay loop src="audio.mp3"></audio>
 
-<mt-fullscreen [options]="options">
+<div class="hero-overlay">
+  <div class="hero-content">
+    <h1 class="hero-title">Minh Tân</h1>
+    <div class="subtitle-group">
+      <div class="hero-frame">
+        <p class="hero-subtitle">Onlytan.png</p>
+      </div>
+      <img class="yamaha-logo" src="images/Yamaha.png" alt="Yamaha Logo" [class.hidden]="!fs.engine.isFirst()">
+    </div>
+  </div>
+</div>
+
+<mt-fullscreen #fs [options]="options">
   @for (photo of photos; track photo.order; let first = $first) {
   <mt-section background="#07070a">
     <mt-photo [class.hero-image]="photo.order === 0" [src]="photo.src" [alt]="photo.alt" [width]="photo.width"
       [height]="photo.height" [focus]="photo.focus ?? '50% 50%'" [priority]="first" />
     @if (photo.order === 0) {
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <h1 class="hero-title">Minh Tân</h1>
-        <div class="subtitle-group">
-          <div class="hero-frame">
-            <p class="hero-subtitle">Onlytan.png</p>
-          </div>
-          <img class="yamaha-logo" src="images/Yamaha.png" alt="Yamaha Logo">
-        </div>
-      </div>
       <img class="hero-side-image" src="images/WR155R.png" alt="WR155R">
-    </div>
     }
   </mt-section>
   }

@@ -102,7 +102,7 @@ mt-photo {
 }
 
 .hero-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -207,10 +207,15 @@ mt-photo {
   /* Màu xám (invert 0.6) và bóng đổ nhẹ */
   filter: brightness(0) invert(0.6) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
   opacity: 0.9;
-  transition: transform 0.3s ease;
+  transition: opacity 0.5s ease, transform 0.3s ease;
 }
 
-.yamaha-logo:hover {
+.yamaha-logo.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.yamaha-logo:hover:not(.hidden) {
   transform: scale(1.05);
   opacity: 1;
 }

@@ -32,7 +32,7 @@ import { MtScrollIndicator } from '../scroll-indicator/mt-scroll-indicator';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MtFullscreen {
-  private readonly engine = inject(ScrollEngine);
+  readonly engine = inject(ScrollEngine);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   /** Ghi đè cấu hình (scroll / animation / indicator / dots) cho trang này. */
